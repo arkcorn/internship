@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { HistoryContext } from "../contexts";
+import History from "../History"
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/")({
@@ -6,6 +8,9 @@ export const Route = createLazyFileRoute("/")({
 });
 
 function Index() {
+    const [history, setHistory] = useContext(HistoryContext)
+
+    
     const [data, setData] = useState({
         company: "",
         location: "",
@@ -17,6 +22,14 @@ function Index() {
         e.preventDefault();
         const jsonData = JSON.stringify(data);
         console.log(jsonData)
+        setHistory([
+            ...history,
+            {company: data.company,
+                location: data.location,
+                position: data.position,
+                date: data.date 
+            }
+        ])
         setData({
             company: "",
             location: "",
@@ -43,6 +56,8 @@ function Index() {
                 <input type="text" name="date" placeholder="Enter date applied" onChange={handleChange} value={data.date} />
                 <button type="submit">Log</button>
             </form>
+            <History history={history}/>
         </div>
+        
     );
 }
